@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-import os, sys, shutil, glob
-import docopt, yaml
-from apefind.util.script import get_script_logger, script_logging
+import os
+import shutil
+import sys
 
+import docopt
 
-log = get_script_logger()
-script_logging = script_logging(log)
+from apefind.util import script
 
+log = script.get_logger()
 
 USAGE = """usage:
     clean_brew_casks.py [--simulate]
@@ -24,9 +24,9 @@ def get_cask_versions(caskdir):
     for e in os.scandir(caskdir):
         if not e.is_dir():
             continue
-        if e.name[0] == '.':
+        if e.name[0] == ".":
             continue
-        if e.name == 'latest':
+        if e.name == "latest":
             continue
         versions.append(e.path)
     return versions
@@ -37,19 +37,19 @@ def get_old_cask_versions(caskdir):
 
 
 def clean_brew_casks(caskroom, simulate=False):
-    log.info('    * removing old brew casks')
+    log.info("    * removing old brew casks")
     for caskdir in get_cask_directories(caskroom):
-        log.info('        ' + os.path.basename(caskdir))
+        log.info("        " + os.path.basename(caskdir))
         for version in get_old_cask_versions(caskdir):
-            log.info('            ' + os.path.basename(version))
+            log.info("            " + os.path.basename(version))
             if not simulate:
                 shutil.rmtree(version)
 
 
-@script_logging
+@script.run()
 def run_script(args):
-    clean_brew_casks('/usr/local/Caskroom', args['--simulate'])
+    clean_brew_casks("/usr/local/Caskroom", args["--simulate"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_script(docopt.docopt(USAGE, argv=sys.argv[1:]))
