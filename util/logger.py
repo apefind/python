@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 from logging import *
@@ -16,14 +14,14 @@ try:
             "CRITICAL": "white,bg_red",
         },
     )
-except ImportError as e:
+except ImportError:
     COLOR_FORMATTER = None
 
 
 def expand_logfile_path(logfile):
-    filename = os.path.abspath(os.path.expandvars(os.path.expanduser(logfile)))
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    return filename
+    filepath = os.path.abspath(os.path.expandvars(os.path.expanduser(logfile)))
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    return filepath
 
 
 def get_logger(name, logfile=None, mode="w", color_formatter=None):

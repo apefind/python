@@ -3,13 +3,13 @@ import functools
 import json
 import os
 import sys
-import yaml
 from datetime import datetime
 
+import yaml
 from termcolor import colored as _col
 
-from . import logging as _logging
-from .path import expand_path
+from apefind.util import logger
+from apefind.util.path import expand_path
 
 
 def _red(*args, **kwargs):
@@ -36,10 +36,10 @@ def get_script_name():
     return os.path.splitext(os.path.basename(sys.modules["__main__"].__file__))[0]
 
 
-def get_logger(name=None, logfile=None, mode="w", color_formatter=_logging.COLOR_FORMATTER):
+def get_logger(name=None, logfile=None, mode="w", color_formatter=logger.COLOR_FORMATTER):
     if name is None:
         name = get_script_name()
-    return _logging.get_logger(name, logfile, mode, color_formatter)
+    return logger.get_logger(name, logfile, mode, color_formatter)
 
 
 def run(name=None, log=None):
@@ -72,10 +72,10 @@ def run(name=None, log=None):
 class ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, fromfile_prefix_chars="@", **kwargs):
         super().__init__(*args, fromfile_prefix_chars=fromfile_prefix_chars, **kwargs)
+        self._cmds = {}
 
     def add_commands(self, *args, dest="cmd", **kwargs):
         self.cmds = self.add_subparsers(*args, dest=dest, **kwargs)
-        self._cmds = {}
 
     def add_command(self, name, **kwargs):
         cmd = self.cmds.add_parser(name, **kwargs)
